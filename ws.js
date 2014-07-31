@@ -1,8 +1,8 @@
 function Search(word){
 	$(function(){
-		// ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰å¯å¦åˆ¤å®š
+		// ƒ_ƒEƒ“ƒ[ƒh‰Â”Û”»’è
 		if(typeof Blob == "undefined"){
-			$("#download").val("ã“ã®ãƒ–ãƒ©ã‚¦ã‚¶ã«ã¯å¯¾å¿œã—ã¦ã„ã¾ã›ã‚“ã€‚");
+			$("#download").val("‚±‚Ìƒuƒ‰ƒEƒU‚É‚Í‘Î‰‚µ‚Ä‚¢‚Ü‚¹‚ñB");
 		}
 		
 		var lines = new Array();
@@ -13,7 +13,7 @@ function Search(word){
 		$("#word").val(word);
 		$("#mydiv").empty();
 		
-		// ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆèª­ã¿è¾¼ã¿ãŒå®Œäº†ã—ã¦ã‹ã‚‰å‡¦ç†é–‹å§‹
+		// ƒhƒLƒ…ƒƒ“ƒg“Ç‚İ‚İ‚ªŠ®—¹‚µ‚Ä‚©‚çˆ—ŠJn
 		$(document).ready(function(){
 			$.ajax({
 				url : url,
@@ -21,14 +21,14 @@ function Search(word){
 				success : function(data){
 					$("#mydiv").append("<h3>" + $(data.responseText).find("#firstHeading").text() + "</h3>");
 					
-					// é …ç›®åï¼æ®µè½
-					lines = $(data.responseText).find("#mw-content-text > p, #mw-content-text > h2").each(function(){
+					// €–Ú–¼^’i—
+					lines = $(data.responseText).find("#mw-content-text > p, #mw-content-text > h2, #mw-content-text > h3, #mw-content-text > h4").each(function(){
 						lines.push($(this));
 					});
 					for(var i = 0; i < lines.length; i++){
 						var str = lines[i].textContent.replace(/[\n\r]/g + "<a", "");
-						if(str.indexOf("ç·¨é›†") != -1){
-							$("#mydiv").append("<h4>" + str.replace(/\[\s+ç·¨é›†\s+\]/gi, "") + "</h4>");
+						if(str.indexOf("•ÒW") != -1){
+							$("#mydiv").append("<h4>" + str.replace(/\[\s+•ÒW\s+\]/gi, "") + "</h4>");
 						}else{
 							$("#mydiv").append("<article>" + str + "</article>");
 						}
@@ -36,26 +36,26 @@ function Search(word){
 					
 					$("#mydiv").append("<hr />");
 					
-					// é–¢é€£é …ç›®
-					items = $(data.responseText).find("h2:contains('é–¢é€£é …ç›®') ~ ul:first > li > a").each(function(){
+					// ŠÖ˜A€–Ú
+					items = $(data.responseText).find("h2:contains('ŠÖ˜A€–Ú') ~ ul:first > li > a").each(function(){
 						items.push($(this));
 					});
-					$("#mydiv").append("<h4>é–¢é€£é …ç›®</h4>");
+					$("#mydiv").append("<h4>ŠÖ˜A€–Ú</h4>");
 					for(var i = 0; i < items.length; i++){
-						$("#mydiv").append("<a href=javascript:(Search('" + items[i].getAttribute("title") + "'));>" + items[i].getAttribute("title") + "</a>ã€");
+						$("#mydiv").append("<a href=javascript:(Search('" + items[i].getAttribute("title") + "'));>" + items[i].getAttribute("title") + "</a>A");
 					}
 					$("#mydiv").append("<br /><br />");
 					
-					// é–¢é€£ç”¨èª (æœ¬æ–‡å†…ã®ãƒªãƒ³ã‚¯é …ç›®)
+					// ŠÖ˜A—pŒê (–{•¶“à‚ÌƒŠƒ“ƒN€–Ú)
 					links = $(data.responseText).find("#mw-content-text > p > a").each(function(){
 						links.push($(this));
 					});
-					$("#mydiv").append("<h4>é–¢é€£ç”¨èª (æœ¬æ–‡å†…ã®ãƒªãƒ³ã‚¯é …ç›®)</h4>");
+					$("#mydiv").append("<h4>ŠÖ˜A—pŒê (–{•¶“à‚ÌƒŠƒ“ƒN€–Ú)</h4>");
 					for(var i = 0; i < links.length; i++){
-						$("#mydiv").append("<a href=javascript:(Search('" + links[i].getAttribute("title") + "'));>" + links[i].getAttribute("title") + "</a>ã€");
+						$("#mydiv").append("<a href=javascript:(Search('" + links[i].getAttribute("title") + "'));>" + links[i].getAttribute("title") + "</a>A");
 					}
 					
-					// åå‰ã‚’ã¤ã‘ã¦ãƒ•ã‚¡ã‚¤ãƒ«ã«ä¿å­˜
+					// –¼‘O‚ğ‚Â‚¯‚Äƒtƒ@ƒCƒ‹‚É•Û‘¶
 					var content = data.responseText;
 					var blob = new Blob([content], {"type" : "application/x-msdownload"});
 					
