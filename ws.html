@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="Shift_JIS">
+		<title>Wikipedia Search</title>
+		<style type="text/css">
+			body		{ background: #fff; color: #000; font: 12px "メイリオ"; }
+			header		{ text-align: right; }
+			article		{ text-indent: 0em; line-height: 2em; }
+			
+			#wrap		{ width: 600px; margin: 0 auto; }
+			#mydiv		{ margin: 0 auto; }
+			
+			h3			{ text-align: center; }
+			
+			a:link		{ color: #000; }
+			a:visited	{ color: #000; }
+			a:hover		{ color: #000; text-decoration: none; }
+			a:active	{ color: #000; }
+		</style>
+		<!-- <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script> -->
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script type="text/javascript" src="jquery.xdomainajax.js"></script>
+		<script type="text/javascript" src="ws.js"></script>
+	</head>
+	<body>
+		<div id="wrap">
+			<header>
+				<a id="download" target="_blank">Download</a>
+				<input type="textbox" id="word" value="無人島" />
+				<input type="button" id="sbtn" value="search" onclick="Search($('#word').val())" />
+			</header>
+			<div id="mydiv"></div>
+		</div>
+	</body>
+</html>
