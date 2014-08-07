@@ -1,71 +1,121 @@
-function Search(word){
-	$(function(){
-		// ダウンロード可否判定
-		if(typeof Blob == "undefined"){
-			$("#download").val("このブラウザには対応していません。");
+function Search(word, properties){
+	var url = "http://ja.wikipedia.org/wiki/" + word;
+
+	$("#word").val(word);
+	$("#history").append("<a href=javascript:Search('" + word + "',['title','body','links'])>" + word + "</a> > ");
+	
+	$("#title").empty();
+	$("#body").empty();
+	$("#links").empty();
+
+	// 項目名
+	if($.inArray("title", properties) != -1){
+		Get_title(url);
+	}
+	
+	// 本文(見出し/段落/リスト)
+	if($.inArray("body", properties) != -1){
+		Get_body(url);
+	}
+	
+	// 本文内のリンク項目
+	if($.inArray("links", properties) != -1){
+		Get_links(url);
+	}
+	
+	// ダウンロード可否判定
+	if(typeof Blob == "undefined"){
+		$("#download").val("このブラウザには対応していません。");
+	}
+
+	// 名前をつけてファイルに保存(おまけ)
+	$.ajax({
+		url : url,
+		type : "GET",
+		success : function(data){
+			var content = data.responseText;
+			var blob = new Blob([content], {"type" : "application/x-msdownload"});
+			
+			window.URL = window.URL || window.webkitURL;
+			$("#download").attr("href", window.URL.createObjectURL(blob));
+			$("#download").attr("download", "wiki.html");
+
+			// $("#links").append(content);
 		}
-		
-		var lines = new Array();
-		var items = new Array();
-		var links = new Array();
-		var url = "http://ja.wikipedia.org/wiki/" + word;
-		
-		$("#word").val(word);
-		$("#mydiv").empty();
-		
-		// ドキュメント読み込みが完了してから処理開始
-		$(document).ready(function(){
-			$.ajax({
-				url : url,
-				type : "GET",
-				success : function(data){
-					$("#mydiv").append("<h3>" + $(data.responseText).find("#firstHeading").text() + "</h3>");
-					
-					// 項目名／段落
-					lines = $(data.responseText).find("#mw-content-text > p, #mw-content-text > h2, #mw-content-text > h3, #mw-content-text > h4").each(function(){
-						lines.push($(this));
-					});
-					for(var i = 0; i < lines.length; i++){
-						var str = lines[i].textContent.replace(/[\n\r]/g + "<a", "");
-						if(str.indexOf("編集") != -1){
-							$("#mydiv").append("<h4>" + str.replace(/\[\s+編集\s+\]/gi, "") + "</h4>");
-						}else{
-							$("#mydiv").append("<article>" + str + "</article>");
-						}
-					}
-					
-					$("#mydiv").append("<hr />");
-					
-					// 関連項目
-					items = $(data.responseText).find("h2:contains('関連項目') ~ ul:first > li > a").each(function(){
-						items.push($(this));
-					});
-					$("#mydiv").append("<h4>関連項目</h4>");
-					for(var i = 0; i < items.length; i++){
-						$("#mydiv").append("<a href=javascript:(Search('" + items[i].getAttribute("title") + "'));>" + items[i].getAttribute("title") + "</a>、");
-					}
-					$("#mydiv").append("<br /><br />");
-					
-					// 関連用語 (本文内のリンク項目)
-					links = $(data.responseText).find("#mw-content-text > p > a").each(function(){
-						links.push($(this));
-					});
-					$("#mydiv").append("<h4>関連用語 (本文内のリンク項目)</h4>");
-					for(var i = 0; i < links.length; i++){
-						$("#mydiv").append("<a href=javascript:(Search('" + links[i].getAttribute("title") + "'));>" + links[i].getAttribute("title") + "</a>、");
-					}
-					
-					// 名前をつけてファイルに保存
-					var content = data.responseText;
-					var blob = new Blob([content], {"type" : "application/x-msdownload"});
-					
-					window.URL = window.URL || window.webkitURL;
-					$("#download").attr("href", window.URL.createObjectURL(blob));
-					$("#download").attr("download", "wiki.html");
-					
-					// $("#mydiv").append(content);
-				}
+	});
+}
+
+function Get_title(url){
+	var title = "";
+
+	$.ajax({
+		url : url,
+		type : "GET",
+		success : function(data){
+			title = $(data.responseText).find("#firstHeading").text();
+
+			$("#title").append("<h3>" + title + "</h3>");
+		}
+	});
+}
+
+function Get_body(url){
+	var body = new Array();
+
+	$.ajax({
+		url : url,
+		type : "GET",
+		success : function(data){
+			// 本文(見出し/段落/リスト)のセレクターを列挙
+			var body_selector = "#mw-content-text > :header, \
+				#mw-content-text > p, \
+				#mw-content-text > dl > dt, \
+				#mw-content-text > dl > dd, \
+				#mw-content-text > ul > li";
+			
+			body = $(data.responseText).find(body_selector).each(function(){
+				body.push($(this));
 			});
-		});
+
+			for(var i = 0; i < body.length; i++){
+				if(body[i].tagName === "H2" || body[i].tagName === "H3" || body[i].tagName === "H4"){
+					$("#body").append("<h4>" + body[i].textContent.replace(/\[\s+編集\s+\]/gi, "") + "</h4>");
+				}else if(body[i].tagName === "P"){
+					$("#body").append("<article>" + body[i].textContent.replace(/\s/gi, "") + "</article>");
+				}else if(body[i].tagName === "DT"){
+					$("#body").append("<h4>" + body[i].textContent.replace(/\s/gi, "") + "</h4>");
+				}else if(body[i].tagName === "DD"){
+					$("#body").append("<article>" + body[i].textContent.replace(/\s/gi, "") + "</article>");
+				}else if(body[i].tagName === "LI"){
+					$("#body").append("<li>" + body[i].textContent.replace(/\s/gi, "") + "</li>");
+				}
+			}
+		}
+	});
+}
+
+function Get_links(url){
+	var links = new Array();
+	$.ajax({
+		url : url,
+		type : "GET",
+		success : function(data){
+			// 本文内のリンク項目のセレクターを列挙
+			var link_selector = "#mw-content-text > p > a, \
+				#mw-content-text li > a";
+			
+			links = $(data.responseText).find(link_selector).each(function(){
+				links.push($(this));
+			});
+
+			$("#links").append("<h4>本文内のリンク項目</h4>");
+			for(var i = 0; i < links.length; i++){
+				var link = links[i].getAttribute("title");
+				if(link && link.indexOf("存在しないページ") == -1){
+
+					$("#links").append("<a href=javascript:Search('" + link.replace(/\s/gi, "_") + "',['title','body','links'])>" + link + "</a>、");
+				}
+			}
+		}
 	});
 }
