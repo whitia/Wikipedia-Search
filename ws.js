@@ -8,27 +8,27 @@ function Search(word, properties){
 	$("#body").empty();
 	$("#links").empty();
 
-	// €–Ú–¼
+	// é …ç›®å
 	if($.inArray("title", properties) != -1){
 		Get_title(url);
 	}
 	
-	// –{•¶(Œ©o‚µ/’i—/ƒŠƒXƒg)
+	// æœ¬æ–‡(è¦‹å‡ºã—/æ®µè½/ãƒªã‚¹ãƒˆ)
 	if($.inArray("body", properties) != -1){
 		Get_body(url);
 	}
 	
-	// –{•¶“à‚ÌƒŠƒ“ƒN€–Ú
+	// æœ¬æ–‡å†…ã®ãƒªãƒ³ã‚¯é …ç›®
 	if($.inArray("links", properties) != -1){
 		Get_links(url);
 	}
 	
-	// ƒ_ƒEƒ“ƒ[ƒh‰Â”Û”»’è
+	// ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰å¯å¦åˆ¤å®š
 	if(typeof Blob == "undefined"){
-		$("#download").val("‚±‚Ìƒuƒ‰ƒEƒU‚É‚Í‘Î‰‚µ‚Ä‚¢‚Ü‚¹‚ñB");
+		$("#download").val("ã“ã®ãƒ–ãƒ©ã‚¦ã‚¶ã«ã¯å¯¾å¿œã—ã¦ã„ã¾ã›ã‚“ã€‚");
 	}
 
-	// –¼‘O‚ğ‚Â‚¯‚Äƒtƒ@ƒCƒ‹‚É•Û‘¶(‚¨‚Ü‚¯)
+	// åå‰ã‚’ã¤ã‘ã¦ãƒ•ã‚¡ã‚¤ãƒ«ã«ä¿å­˜(ãŠã¾ã‘)
 	$.ajax({
 		url : url,
 		type : "GET",
@@ -66,28 +66,31 @@ function Get_body(url){
 		url : url,
 		type : "GET",
 		success : function(data){
-			// –{•¶(Œ©o‚µ/’i—/ƒŠƒXƒg)‚ÌƒZƒŒƒNƒ^[‚ğ—ñ‹“
-			var body_selector = "#mw-content-text > :header, \
+			// æœ¬æ–‡(è¦‹å‡ºã—/æ®µè½/ãƒªã‚¹ãƒˆ)ã®ã‚»ãƒ¬ã‚¯ã‚¿ãƒ¼ã‚’åˆ—æŒ™
+			var selector = "#mw-content-text > :header, \
 				#mw-content-text > p, \
 				#mw-content-text > dl > dt, \
 				#mw-content-text > dl > dd, \
 				#mw-content-text > ul > li";
 			
-			body = $(data.responseText).find(body_selector).each(function(){
+			body = $(data.responseText).find(selector).each(function(){
 				body.push($(this));
 			});
 
 			for(var i = 0; i < body.length; i++){
-				if(body[i].tagName === "H2" || body[i].tagName === "H3" || body[i].tagName === "H4"){
-					$("#body").append("<h4>" + body[i].textContent.replace(/\[\s+•ÒW\s+\]/gi, "") + "</h4>");
-				}else if(body[i].tagName === "P"){
-					$("#body").append(body[i].textContent.replace(/\s/gi, ""));
-				}else if(body[i].tagName === "DT"){
-					$("#body").append("<h4>" + body[i].textContent.replace(/\s/gi, "") + "</h4>");
-				}else if(body[i].tagName === "DD"){
-					$("#body").append(body[i].textContent.replace(/\s/gi, ""));
-				}else if(body[i].tagName === "LI"){
-					$("#body").append("<li>" + body[i].textContent.replace(/\s/gi, "") + "</li>");
+				var bodyTagName = body[i].tagName;
+				var bodyTextContent = body[i].textContent;
+
+				if(bodyTagName === "H2" || bodyTagName === "H3" || bodyTagName === "H4"){
+					$("#body").append("<h4>" + bodyTextContent.replace(/\[\s+ç·¨é›†\s+\]/gi, "") + "</h4>");
+				}else if(bodyTagName === "P"){
+					$("#body").append(bodyTextContent.replace(/\s/gi, ""));
+				}else if(bodyTagName === "DT"){
+					$("#body").append("<h4>" + bodyTextContent.replace(/\s/gi, "") + "</h4>");
+				}else if(bodyTagName === "DD"){
+					$("#body").append(bodyTextContent.replace(/\s/gi, ""));
+				}else if(bodyTtagName === "LI"){
+					$("#body").append("<li>" + bodyTextContent.replace(/\s/gi, "") + "</li>");
 				}
 			}
 		}
@@ -100,20 +103,21 @@ function Get_links(url){
 		url : url,
 		type : "GET",
 		success : function(data){
-			// –{•¶“à‚ÌƒŠƒ“ƒN€–Ú‚ÌƒZƒŒƒNƒ^[‚ğ—ñ‹“
-			var link_selector = "#mw-content-text > p > a, \
+			// æœ¬æ–‡å†…ã®ãƒªãƒ³ã‚¯é …ç›®ã®ã‚»ãƒ¬ã‚¯ã‚¿ãƒ¼ã‚’åˆ—æŒ™
+			var selector = "#mw-content-text > p > a, \
 				#mw-content-text li > a";
 			
-			links = $(data.responseText).find(link_selector).each(function(){
+			links = $(data.responseText).find(selector).each(function(){
 				links.push($(this));
 			});
 
-			$("#links").append("<h4>–{•¶“à‚ÌƒŠƒ“ƒN€–Ú</h4>");
+			$("#links").append("<h4>æœ¬æ–‡å†…ã®ãƒªãƒ³ã‚¯é …ç›®</h4>");
+
 			for(var i = 0; i < links.length; i++){
 				var link = links[i].getAttribute("title");
-				if(link && link.indexOf("‘¶İ‚µ‚È‚¢ƒy[ƒW") == -1){
-
-					$("#links").append("<a href=javascript:Search('" + link.replace(/\s/gi, "_") + "',['title','body','links'])>" + link + "</a>A");
+				
+				if(link && link.indexOf("å­˜åœ¨ã—ãªã„ãƒšãƒ¼ã‚¸") == -1){
+					$("#links").append("<a href=javascript:Search('" + link.replace(/\s/gi, "_") + "',['title','body','links'])>" + link + "</a>ã€");
 				}
 			}
 		}
