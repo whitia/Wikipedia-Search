@@ -54,7 +54,7 @@ function Get_title(url){
 		success : function(data){
 			title = $(data.responseText).find("#firstHeading").text();
 
-			$("#title").append("<h3>" + title + "</h3>");
+			$("#title").append(title);
 		}
 	});
 }
@@ -81,11 +81,11 @@ function Get_body(url){
 				if(body[i].tagName === "H2" || body[i].tagName === "H3" || body[i].tagName === "H4"){
 					$("#body").append("<h4>" + body[i].textContent.replace(/\[\s+ï“èW\s+\]/gi, "") + "</h4>");
 				}else if(body[i].tagName === "P"){
-					$("#body").append("<article>" + body[i].textContent.replace(/\s/gi, "") + "</article>");
+					$("#body").append(body[i].textContent.replace(/\s/gi, ""));
 				}else if(body[i].tagName === "DT"){
 					$("#body").append("<h4>" + body[i].textContent.replace(/\s/gi, "") + "</h4>");
 				}else if(body[i].tagName === "DD"){
-					$("#body").append("<article>" + body[i].textContent.replace(/\s/gi, "") + "</article>");
+					$("#body").append(body[i].textContent.replace(/\s/gi, ""));
 				}else if(body[i].tagName === "LI"){
 					$("#body").append("<li>" + body[i].textContent.replace(/\s/gi, "") + "</li>");
 				}
