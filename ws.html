@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="Shift_JIS">
+		<title>Wikipedia Search</title>
+		<style type="text/css">
+			body		{ background: #222; color: #ddd; font: 12px "メイリオ"; }
+			header		{ text-align: right; }
+			
+			#wrap		{ width: 600px; margin: 0 auto; }
+			#history	{ }
+			#title		{ font-size: 14px; font-weight: bold; text-align: center; }
+			#body		{ line-height: 2em; }
+			#links		{ }
+			
+			a:link		{ color: #ddd; }
+			a:visited	{ color: #ddd; }
+			a:hover		{ color: #ddd; text-decoration: none; }
+			a:active	{ color: #ddd; }
+		</style>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
+		<!-- <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script> -->
+		<script type="text/javascript" src="jquery.xdomainajax.js"></script>
+		<script type="text/javascript" src="ws.js"></script>
+	</head>
+	<body>
+		<div id="wrap">
+			<header>
+				<a id="download" target="_blank">Download</a>
+				<input type="textbox" id="word" value="サバイバル" />
+				<input type="button" value="search" onclick="Search($('#word').val(), ['title', 'body', 'links'])" />
+			</header>
+			<div id="history"></div>
+			<div id="title"></div>
+			<div id="body"></div>
+			<div id="links"></div>
+		</div>
+	</body>
+</html>
