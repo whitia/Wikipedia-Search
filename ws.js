@@ -17,11 +17,11 @@ function Search(word){
 					Get_title(url);
 				}
 				break;
-			// case "contents":	// 目次
-			// 	if($(this).prop("checked")){
-			// 		Get_contents(url);
-			// 	}
-			// 	break;
+			case "contents":	// 目次
+				if($(this).prop("checked")){
+					Get_contents(url);
+				}
+				break;
 			case "image":		// 画像
 				if($(this).prop("checked")){
 					Get_image(url);
