@@ -1,14 +1,27 @@
 function Search(word){
 	var url = "http://ja.wikipedia.org/wiki/" + word;
 
-	$("#word").val(word);
-	$("#history").append("<a href=javascript:Search('" + word + "')>" + word + "</a> > ");
-	
 	$("#title").empty();
 	$("#contents").empty();
 	$("#image").empty();
 	$("#body").empty();
 	$("#links").empty();
+	if($("input[value='history']").prop("checked")){
+		$("#history").empty();
+	}
+
+	$.ajax({
+		url : url,
+		type : "GET",
+		success : function(data){
+			if(!data.responseText){
+				$("#title").append("「" + word + "」は見つかりませんでした。");
+			}
+		}
+	});
+
+	$("#word").val(word);
+	$("#history").append("<a href=javascript:Search('" + word + "')>" + word + "</a> > ");
 
 	$("input[type='checkbox']").each(function(){
 		switch($(this).val()){
@@ -120,7 +133,8 @@ function Get_body(url){
 				#mw-content-text > p, \
 				#mw-content-text > dl > dt, \
 				#mw-content-text > dl > dd, \
-				#mw-content-text > ul > li";
+				#mw-content-text > ul > li, \
+				#mw-content-text > ol > li";
 			
 			body = $(data.responseText).find(selector).each(function(){
 				body.push($(this));
@@ -128,23 +142,25 @@ function Get_body(url){
 
 			for(var i = 0; i < body.length; i++){
 				var bodyTagName = body[i].tagName;
-				var bodyTextContent = body[i].textContent;
+				var bodyText = $(body[i]).text();
 
 				switch(bodyTagName){
-					case "H2" || "H3" || "H4":
-						$("#body").append("<h4>" + bodyTextContent.replace(/\[\s+編集\s+\]/gi, "") + "</h4>");
+					case "H2":
+					case "H3":
+					case "H4":
+						$("#body").append("<h4>" + bodyText.replace(/\[\s+編集\s+\]/gi, "") + "</h4>");
 						break;
 					case "P":
-						$("#body").append(bodyTextContent.replace(/\s/gi, ""));
+						$("#body").append("<p>" + bodyText.replace(/\s/gi, "") + "</p>");
 						break;
 					case "DT":
-						$("#body").append("<h4>" + bodyTextContent.replace(/\s/gi, "") + "</h4>");
+						$("#body").append("<h4>" + bodyText.replace(/\s/gi, "") + "</h4>");
 						break;
 					case "DD":
-						$("#body").append(bodyTextContent.replace(/\s/gi, ""));
+						$("#body").append("<p>" + bodyText.replace(/\s/gi, "") + "</p>");
 						break;
 					case "LI":
-						$("#body").append("<li>" + bodyTextContent.replace(/\s/gi, "") + "</li>");
+						$("#body").append("<li>" + bodyText.replace(/\s/gi, "") + "</li>");
 						break;
 				}
 			}
